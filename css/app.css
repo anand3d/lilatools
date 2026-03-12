@@ -139,14 +139,15 @@ header {
 
 /* ── Left panel ───────────────────────────────────────── */
 .left {
-  grid-row: 3; display: flex; flex-direction: column;
+  grid-row: 3; grid-column: 1; display: flex; flex-direction: column;
   background: var(--s1); border-right: 1px solid var(--border);
   overflow: hidden;
 }
 
 /* ── Viewport ─────────────────────────────────────────── */
 .viewport {
-  grid-row: 3; position: relative; background: #07080b; overflow: hidden;
+  flex: 1; position: relative; background: #07080b; overflow: hidden;
+  min-height: 0;
 }
 #main-canvas, #heat-canvas {
   position: absolute; inset: 0; width: 100%; height: 100%;
@@ -178,7 +179,7 @@ header {
 
 /* ── Right panel ──────────────────────────────────────── */
 .right {
-  grid-row: 3; display: flex; flex-direction: column;
+  grid-row: 3; grid-column: 3; display: flex; flex-direction: column;
   background: var(--s1); border-left: 1px solid var(--border);
   overflow: hidden;
 }
@@ -736,6 +737,6 @@ input[type=range]::-webkit-slider-thumb {
 .viewport-col {
   grid-row: 3; grid-column: 2;
   display: flex; flex-direction: column;
-  overflow: hidden; position: relative;
+  overflow: hidden; min-height: 0; min-width: 0;
   background: #07080b;
 }
