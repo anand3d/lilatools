@@ -85,6 +85,15 @@
     </select>
   </div>
 
+  <!-- Session / date filter -->
+  <div class="panel-section">
+    <div class="panel-label" style="display:flex;justify-content:space-between">
+      FILTER BY SESSION
+      <span class="lnk" onclick="App.clearSessionFilter()">reset</span>
+    </div>
+    <div id="date-filter-list" class="date-filter-list"></div>
+  </div>
+
   <!-- Player filter -->
   <div class="panel-section">
     <div class="panel-label">PLAYER FILTER</div>
@@ -159,12 +168,6 @@
 
 <!-- ══ RIGHT PANEL ═══════════════════════════════════════════════════════════════ -->
 <aside class="right">
-
-  <!-- Session filter -->
-  <div class="panel-section">
-    <div class="panel-label">FILTER BY DATE</div>
-    <div id="date-filter-list" class="date-filter-list"></div>
-  </div>
 
   <!-- Event type filters -->
   <div class="panel-section">
@@ -243,16 +246,12 @@
     <div id="hotzones"></div>
   </div>
 
-  <!-- Map info -->
-  <div class="panel-section">
+  <!-- Map info + legend — scrollable so they don't overflow -->
+  <div class="panel-section scrollable">
     <div class="panel-label">MAP INFO</div>
-    <div id="map-info" style="font-size:8px;color:var(--muted);line-height:1.9"></div>
-  </div>
-
-  <!-- Legend -->
-  <div class="panel-section">
-    <div class="panel-label">LEGEND</div>
-    <div id="legend"></div>
+    <div id="map-info" style="font-size:8px;color:var(--muted);line-height:1.9;padding:0 12px 8px"></div>
+    <div class="panel-label" style="margin-top:4px">LEGEND</div>
+    <div id="legend" style="padding-bottom:8px"></div>
   </div>
 
 </aside>
@@ -266,9 +265,9 @@
     oninput="App.tlSeek(this.value)">
   <span class="tl-time" id="tl-total">0:00</span>
   <span class="tl-sep">|</span>
-  <span style="font-size:8px;color:var(--muted);flex-shrink:0">SPEED</span>
+  <span style="font-size:8px;color:var(--muted);flex-shrink:0">SPD</span>
   <input type="range" id="tl-speed-slider" class="tl-speed-slider" min="1" max="50" value="10"
-    oninput="App.tlSpeed(this.value)">
+    style="width:44px" oninput="App.tlSpeed(this.value)">
   <span class="sl-val" id="tl-speed-val">10×</span>
   <span class="tl-sep">|</span>
   <span style="font-size:8px;color:var(--muted);white-space:nowrap;flex-shrink:0">

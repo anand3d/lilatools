@@ -662,8 +662,22 @@ function buildPublicAPI() {
       heatmapMode = mode;
       syncHeatmapButtons();
       renderer.layers.heatmap = mode !== 'off';
-      if (mode !== 'off') renderer.buildHeatmap(activeSessions(), mode);
+      if (mode !== 'off') {
+        renderer.buildHeatmap(activeSessions(), mode);
+      } else {
+        // Explicitly clear the heatmap canvas so nothing bleeds through
+        renderer.heatCtx.clearRect(0, 0, renderer.heatCv.width, renderer.heatCv.height);
+      }
       renderFrame();
+    },
+
+    clearSessionFilter() {
+      window._hiddenMids = new Set();
+      if (window._dateMap) {
+        Object.values(window._dateMap).forEach(g => { g.on = true; });
+      }
+      buildDateFilter();
+      fullRender();
     },
 
     toggleDateGroup(key) {

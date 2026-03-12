@@ -184,6 +184,26 @@ header {
   overflow: hidden;
 }
 
+/* ── Shared panel sections ────────────────────────────── */
+.panel-section {
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.panel-section.scrollable {
+  flex: 1; overflow-y: auto; min-height: 0;
+}
+.panel-section.scrollable::-webkit-scrollbar { width: 2px; }
+.panel-section.scrollable::-webkit-scrollbar-thumb { background: var(--dim); }
+.panel-label {
+  font-size: 7px; letter-spacing: 2.5px; color: var(--dim);
+  text-transform: uppercase; padding: 7px 12px 4px;
+}
+.lnk {
+  font-size: 7px; color: var(--muted); cursor: pointer;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.lnk:hover { color: var(--acc); }
+
 /* ── Timeline bar ─────────────────────────────────────── */
 .timeline {
   grid-column: 1 / -1; grid-row: 4;
@@ -786,3 +806,26 @@ input[type=range]::-webkit-slider-thumb {
 .date-pill.off .date-dot { background: var(--dim); }
 .date-label { flex: 1; color: var(--text); }
 .date-count { color: var(--muted); font-size: 7px; }
+
+/* ══ MISSING PANEL UTILITIES ════════════════════════════════════════════════ */
+.fullsel {
+  width: calc(100% - 24px); margin: 0 12px 8px;
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  background: var(--s3); border: 1px solid var(--border2);
+  color: var(--text); padding: 4px 6px; border-radius: 2px;
+  letter-spacing: .5px;
+}
+.btn-row {
+  display: flex; gap: 4px; padding: 4px 12px 8px;
+}
+.smolbtn {
+  font-family: 'DM Mono', monospace; font-size: 8px;
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--muted); padding: 3px 8px; border-radius: 2px;
+  cursor: pointer; letter-spacing: .5px; transition: all .15s;
+}
+.smolbtn.active, .smolbtn:focus { color: var(--acc); border-color: var(--acc); }
+.smolbtn:hover { color: var(--text); background: var(--s3); }
+.player-list { overflow-y: auto; flex: 1; min-height: 0; }
+.player-list::-webkit-scrollbar { width: 2px; }
+.player-list::-webkit-scrollbar-thumb { background: var(--dim); }
