@@ -415,10 +415,21 @@ function wireCanvasInteraction() {
     const rect = cv.getBoundingClientRect();
     const mx = e.clientX - rect.left, my = e.clientY - rect.top;
     const factor = e.deltaY < 0 ? 1.12 : 0.89;
-    const nz = Math.max(0.05, Math.min(14, renderer.cam.zoom * factor));
-    renderer.cam.x = mx + (renderer.cam.x - mx) * (nz / renderer.cam.zoom);
-    renderer.cam.y = my + (renderer.cam.y - my) * (nz / renderer.cam.zoom);
+    const oz = renderer.cam.zoom;
+    const nz = Math.max(0.05, Math.min(14, oz * factor));
+    const sc = renderer._sc;
+
+    // Find the map pixel currently under the cursor
+    const oxOld = (renderer.W - 1024 * sc * oz) / 2 + renderer.cam.x;
+    const oyOld = (renderer.H - 1024 * sc * oz) / 2 + renderer.cam.y;
+    const pxCursor = (mx - oxOld) / (sc * oz);
+    const pyCursor = (my - oyOld) / (sc * oz);
+
+    // After zoom, keep that map pixel under the cursor
     renderer.cam.zoom = nz;
+    renderer.cam.x = mx - pxCursor * sc * nz - (renderer.W - 1024 * sc * nz) / 2;
+    renderer.cam.y = my - pyCursor * sc * nz - (renderer.H - 1024 * sc * nz) / 2;
+
     if (heatmapMode !== 'off') renderer.buildHeatmap(activeSessions(), heatmapMode);
     renderFrame();
     setText('zoom-display', Math.round(nz * 100) + '%');
@@ -546,12 +557,15 @@ function buildPublicAPI() {
       const cfg = MAP_CONFIGS[mapId] || MAP_CONFIGS.AmbroseValley;
       const px = ((wx - cfg.ox) / cfg.scale) * 1024;
       const py = (1  - (wz - cfg.oz) / cfg.scale) * 1024;
-      const { sx, sy } = renderer.toScreen(px, py);
+      // Zoom in a bit, then centre the target map pixel on screen
+      renderer.cam.zoom = Math.min(renderer.cam.zoom * 1.5, 4);
+      const sc = renderer._sc;
+      const nz = renderer.cam.zoom;
       const cx = renderer.canvas.width  / 2;
       const cy = renderer.canvas.height / 2;
-      renderer.cam.zoom = Math.min(renderer.cam.zoom * 1.5, 4);
-      renderer.cam.x += cx - sx;
-      renderer.cam.y += cy - sy;
+      // Set pan so target pixel lands at canvas centre
+      renderer.cam.x = cx - px * sc * nz - (renderer.canvas.width  - 1024 * sc * nz) / 2;
+      renderer.cam.y = cy - py * sc * nz - (renderer.canvas.height - 1024 * sc * nz) / 2;
       if (heatmapMode !== 'off') renderer.buildHeatmap(activeSessions(), heatmapMode);
       renderFrame();
     },

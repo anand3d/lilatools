@@ -156,13 +156,34 @@ export class MapRenderer {
   get W() { return this.canvas.width; }
   get H() { return this.canvas.height; }
 
-  // Convert map pixel → screen pixel
-  toScreen(px, py) { return this.cam.toScreen(px, py, this.W, this.H); }
+  // Base scale: screen pixels per map pixel at zoom=1.
+  // All minimaps are 1024x1024. Image is letterboxed so sc = min(W,H)/1024.
+  get _sc() { return Math.min(this.W, this.H) / 1024; }
 
-  // Convert screen pixel → map pixel
-  fromScreen(sx, sy) { return this.cam.fromScreen(sx, sy, this.W, this.H); }
+  // Top-left screen position of the rendered map image.
+  get _imgOrigin() {
+    const d = 1024 * this._sc * this.cam.zoom;
+    return {
+      x: (this.W - d) / 2 + this.cam.x,
+      y: (this.H - d) / 2 + this.cam.y,
+    };
+  }
 
-  // Map pixel → world coord
+  // Map pixel [0-1024] -> screen pixel (accounts for letterbox + pan + zoom)
+  toScreen(px, py) {
+    const { x: ox, y: oy } = this._imgOrigin;
+    const s = this._sc * this.cam.zoom;
+    return { sx: ox + px * s, sy: oy + py * s };
+  }
+
+  // Screen pixel -> map pixel [0-1024]
+  fromScreen(sx, sy) {
+    const { x: ox, y: oy } = this._imgOrigin;
+    const s = this._sc * this.cam.zoom;
+    return { px: (sx - ox) / s, py: (sy - oy) / s };
+  }
+
+  // Map pixel -> world coord
   fromPixel(px, py, mapId) {
     const cfg = MAP_CONFIGS[mapId] || MAP_CONFIGS.AmbroseValley;
     const u = px / 1024;
