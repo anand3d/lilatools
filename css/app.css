@@ -44,7 +44,7 @@ html, body {
 /* ── App shell ────────────────────────────────────────── */
 .app {
   display: grid;
-  grid-template-rows: 46px 36px 1fr 80px;
+  grid-template-rows: 46px 36px 1fr 48px;
   grid-template-columns: 256px 1fr 228px;
   height: 100vh;
 }
@@ -188,49 +188,33 @@ header {
 .timeline {
   grid-column: 1 / -1; grid-row: 4;
   background: var(--s1); border-top: 1px solid var(--border2);
-  display: flex; align-items: center; gap: 12px; padding: 0 16px;
-  z-index: 30;
-}
-#tl-bar {
-  display: flex; align-items: center; gap: 12px; flex: 1;
+  display: flex; align-items: center; gap: 10px; padding: 0 16px;
+  height: 48px; z-index: 30;
 }
 .tl-btn, .tlbtn {
   background: none; border: none; color: var(--muted);
   font-size: 16px; cursor: pointer; padding: 4px 6px;
-  border-radius: var(--r); transition: color .15s;
+  border-radius: var(--r); transition: color .15s; flex-shrink: 0;
 }
 .tl-btn:hover, .tlbtn:hover { color: var(--acc); }
 .tl-time {
   font-family: 'DM Mono', monospace; font-size: 10px;
-  color: var(--text); white-space: nowrap; min-width: 42px;
+  color: var(--text); white-space: nowrap; min-width: 38px;
+  flex-shrink: 0;
 }
-.tl-track-wrap {
-  flex: 1; display: flex; align-items: center; min-width: 0;
+.tl-scrubber {
+  flex: 1; min-width: 0;
+  accent-color: var(--acc);
+  height: 4px; cursor: pointer;
 }
-#tl-track {
-  flex: 1; position: relative; height: 4px;
-  background: var(--dim); border-radius: 2px; cursor: pointer;
+.tl-speed-slider {
+  width: 70px; flex-shrink: 0;
+  accent-color: var(--acc);
 }
-#tl-track::after {
-  content: '';
-  position: absolute; top: 0; left: 0; bottom: 0;
-  width: var(--progress, 0%);
-  background: var(--acc); border-radius: 2px;
-  pointer-events: none;
+.tl-sep {
+  color: var(--border2); font-size: 12px; flex-shrink: 0;
 }
-#tl-scrubber {
-  position: absolute; inset: -6px 0; width: 100%; opacity: 0; cursor: pointer;
-}
-.tl-speed-ctrl { display: flex; align-items: center; gap: 6px; }
-.tl-speed-label {
-  font-size: 8px; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 1px;
-}
-.tl-speed-val { font-size: 9px; color: var(--acc); min-width: 20px; }
-.tl-speed-slider { width: 80px; }
-.tl-no-ts {
-  font-size: 9px; color: var(--muted); letter-spacing: 1px;
-}
+.sl-val { font-size: 9px; color: var(--acc); min-width: 24px; flex-shrink: 0; }
 
 /* ── Panel shared ─────────────────────────────────────── */
 .psec { border-bottom: 1px solid var(--border); flex-shrink: 0; }

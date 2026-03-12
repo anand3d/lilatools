@@ -265,23 +265,19 @@
 <div class="timeline" id="tl-bar">
   <button class="tlbtn" id="tl-playbtn" onclick="App.tlPlay()">▶</button>
   <button class="tlbtn" onclick="App.tlRestart()">⏮</button>
-  <div class="tl-time" id="tl-current">0:00</div>
-  <div class="tl-track-wrap">
-    <div class="tl-track" id="tl-track">
-      <input type="range" id="tl-scrubber" min="0" max="0" value="0"
-        oninput="App.tlSeek(this.value)" class="tl-scrubber">
-    </div>
-  </div>
-  <div class="tl-time" id="tl-total">0:00</div>
-  <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-    <span style="font-size:8px;color:var(--muted)">SPEED</span>
-    <input type="range" min="1" max="50" value="10" style="width:60px"
-      oninput="App.tlSpeed(this.value)">
-    <span class="sl-val" id="tl-speed-val">10×</span>
-  </div>
-  <div style="font-size:8px;color:var(--muted);padding-left:14px;letter-spacing:.5px;white-space:nowrap;flex-shrink:0">
+  <span class="tl-time" id="tl-current">0:00</span>
+  <input type="range" id="tl-scrubber" class="tl-scrubber" min="0" max="0" value="0"
+    oninput="App.tlSeek(this.value)">
+  <span class="tl-time" id="tl-total">0:00</span>
+  <span class="tl-sep">|</span>
+  <span style="font-size:8px;color:var(--muted);flex-shrink:0">SPEED</span>
+  <input type="range" id="tl-speed-slider" class="tl-speed-slider" min="1" max="50" value="10"
+    oninput="App.tlSpeed(this.value)">
+  <span class="sl-val" id="tl-speed-val">10×</span>
+  <span class="tl-sep">|</span>
+  <span style="font-size:8px;color:var(--muted);white-space:nowrap;flex-shrink:0">
     TIMED: <span id="ts-count" style="color:var(--acc)">—</span>
-  </div>
+  </span>
 </div>
 
 </div><!-- .app -->
