@@ -194,15 +194,18 @@ header {
 #tl-bar {
   display: flex; align-items: center; gap: 12px; flex: 1;
 }
-.tl-btn {
+.tl-btn, .tlbtn {
   background: none; border: none; color: var(--muted);
   font-size: 16px; cursor: pointer; padding: 4px 6px;
   border-radius: var(--r); transition: color .15s;
 }
-.tl-btn:hover { color: var(--acc); }
+.tl-btn:hover, .tlbtn:hover { color: var(--acc); }
 .tl-time {
   font-family: 'DM Mono', monospace; font-size: 10px;
   color: var(--text); white-space: nowrap; min-width: 42px;
+}
+.tl-track-wrap {
+  flex: 1; display: flex; align-items: center; min-width: 0;
 }
 #tl-track {
   flex: 1; position: relative; height: 4px;
