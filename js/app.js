@@ -31,8 +31,7 @@ let replayHUD = { ev: null, uid: null, color: null };
 // ─── Boot ──────────────────────────────────────────────────────────────────────
 export async function init() {
   const mainCv = document.getElementById('main-canvas');
-  const heatCv = document.getElementById('heat-canvas');
-  renderer = new MapRenderer(mainCv, heatCv);
+  renderer = new MapRenderer(mainCv);
 
   tl = new Timeline(timeMs => {
     updatePlayhead(timeMs);
@@ -142,10 +141,13 @@ function fullRender() {
 function resizeCanvases() {
   const vp = document.getElementById('viewport');
   const w = vp.clientWidth, h = vp.clientHeight;
-  ['main-canvas','heat-canvas'].forEach(id => {
-    const c = document.getElementById(id);
-    c.width = w; c.height = h;
-  });
+  const mc = document.getElementById('main-canvas');
+  mc.width = w; mc.height = h;
+  // Keep offscreen heatmap canvas in sync
+  if (renderer) {
+    renderer.heatCv.width  = w;
+    renderer.heatCv.height = h;
+  }
 }
 
 // ─── Replay HUD ────────────────────────────────────────────────────────────────
@@ -185,7 +187,7 @@ function rebuildUI() {
   buildLegend();
   syncHeatmapButtons();
   updateMapInfo();
-  buildDateFilter();
+  buildMatchFilter();
   buildCompareSelectorB();
   fullRender();
 }
@@ -277,44 +279,32 @@ function syncHeatmapButtons() {
   });
 }
 
-function buildDateFilter() {
-  const el = document.getElementById('date-filter-list');
+function buildMatchFilter() {
+  const el = document.getElementById('match-filter-list');
   if (!el) return;
 
-  // Extract unique dates from sessions on current map
-  const mapSessions = sessions.filter(s => s.map_id === activeMap);
-  const dateMap = {};
-  mapSessions.forEach(s => {
-    // Use first timestamp if available, else fall back to mid prefix
-    let dateKey = 'Unknown';
-    const tsEvents = s.events.filter(e => e.ts_rel != null);
-    if (tsEvents.length && s.hasTs) {
-      // ts_rel is microseconds from epoch
-      const firstTs = Math.min(...tsEvents.map(e => e.ts_rel));
-      // sessions.json ts_rel is relative so we can't get absolute date easily
-      // Use session mid prefix as a proxy grouping
-      dateKey = s.mid.slice(0, 8);
-    } else {
-      dateKey = s.mid.slice(0, 8);
-    }
-    if (!dateMap[dateKey]) dateMap[dateKey] = { sessions: [], on: true };
-    dateMap[dateKey].sessions.push(s.mid);
-  });
+  // Get unique match IDs for current map, sorted
+  const mapMatches = [...new Set(
+    sessions.filter(s => s.map_id === activeMap).map(s => s.mid)
+  )].sort();
 
-  if (!Object.keys(dateMap).length) {
-    el.innerHTML = '<div style="font-size:8px;color:var(--muted)">No sessions loaded</div>';
+  if (!mapMatches.length) {
+    el.innerHTML = '<div style="font-size:8px;color:var(--muted);padding:4px 12px">No matches loaded</div>';
     return;
   }
 
-  el.innerHTML = Object.entries(dateMap).map(([key, info]) => `
-    <div class="date-pill${info.on ? '' : ' off'}" onclick="App.toggleDateGroup('${key}')">
-      <div class="date-dot"></div>
-      <span class="date-label">${key}</span>
-      <span class="date-count">${info.sessions.length} session${info.sessions.length !== 1 ? 's' : ''}</span>
-    </div>`).join('');
+  if (!window._hiddenMids) window._hiddenMids = new Set();
 
-  // Store dateMap globally for toggle
-  window._dateMap = dateMap;
+  el.innerHTML = mapMatches.map(mid => {
+    const sessionCount = sessions.filter(s => s.map_id === activeMap && s.mid === mid).length;
+    const isOff = window._hiddenMids.has(mid);
+    const short = mid.length > 14 ? mid.slice(0, 14) + '…' : mid;
+    return `<div class="mfpill${isOff ? ' off' : ''}" onclick="App.toggleMatchFilter('${mid}')" title="${mid}">
+      <div class="mf-dot"></div>
+      <span class="mf-label">${short}</span>
+      <span class="mf-count">${sessionCount}s</span>
+    </div>`;
+  }).join('');
 }
 
 function updateMapInfo() {
@@ -671,28 +661,21 @@ function buildPublicAPI() {
       renderFrame();
     },
 
-    clearSessionFilter() {
+    clearMatchFilter() {
       window._hiddenMids = new Set();
-      if (window._dateMap) {
-        Object.values(window._dateMap).forEach(g => { g.on = true; });
-      }
-      buildDateFilter();
+      buildMatchFilter();
       fullRender();
     },
 
-    toggleDateGroup(key) {
-      if (!window._dateMap || !window._dateMap[key]) return;
-      const group = window._dateMap[key];
-      group.on = !group.on;
-      // Toggle sessions in this group by adding/removing their mids from a filter
+    toggleMatchFilter(mid) {
       if (!window._hiddenMids) window._hiddenMids = new Set();
-      group.sessions.forEach(mid => {
-        group.on ? window._hiddenMids.delete(mid) : window._hiddenMids.add(mid);
-      });
-      // Rebuild date filter UI
-      buildDateFilter();
-      // Re-filter activeSessions to respect hidden mids
-      renderFrame();
+      if (window._hiddenMids.has(mid)) {
+        window._hiddenMids.delete(mid);
+      } else {
+        window._hiddenMids.add(mid);
+      }
+      buildMatchFilter();
+      fullRender();
     },
 
     toggleLayer(key) {
@@ -835,16 +818,11 @@ function buildPublicAPI() {
     },
 
     exportPng() {
-      const out = document.createElement('canvas');
+      // heatmap is already composited into main-canvas during render()
       const main = document.getElementById('main-canvas');
-      const heat = document.getElementById('heat-canvas');
-      out.width = main.width; out.height = main.height;
-      const oc = out.getContext('2d');
-      oc.drawImage(main, 0, 0);
-      if (renderer.layers.heatmap) { oc.globalAlpha = renderer.heatOpacity; oc.drawImage(heat, 0, 0); }
       const a = document.createElement('a');
       a.download = `lilaBlack_${activeMap}_${Date.now()}.png`;
-      a.href = out.toDataURL('image/png'); a.click();
+      a.href = main.toDataURL('image/png'); a.click();
     },
 
     toggleInsights() {

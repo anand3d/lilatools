@@ -85,13 +85,13 @@
     </select>
   </div>
 
-  <!-- Session / date filter -->
+  <!-- Match filter -->
   <div class="panel-section">
     <div class="panel-label" style="display:flex;justify-content:space-between">
-      FILTER BY SESSION
-      <span class="lnk" onclick="App.clearSessionFilter()">reset</span>
+      FILTER BY MATCH
+      <span class="lnk" onclick="App.clearMatchFilter()">all</span>
     </div>
-    <div id="date-filter-list" class="date-filter-list"></div>
+    <div id="match-filter-list" class="match-filter-list"></div>
   </div>
 
   <!-- Player filter -->
@@ -135,7 +135,6 @@
 <div class="viewport-col">
   <div id="viewport" class="viewport">
     <canvas id="main-canvas"></canvas>
-    <canvas id="heat-canvas" style="pointer-events:none;position:absolute;top:0;left:0;opacity:1"></canvas>
     <div id="empty-state" class="empty-state">Drop .nakama-0 files here or click LOAD FILES</div>
     <div id="replay-hud" class="replay-hud" style="display:none;opacity:0"></div>
   </div>

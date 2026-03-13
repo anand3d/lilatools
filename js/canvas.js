@@ -129,11 +129,12 @@ export function drawMarker(ctx, sx, sy, evName, scale = 1, isHovered = false) {
 // ─── Main renderer ─────────────────────────────────────────────────────────────
 
 export class MapRenderer {
-  constructor(mainCanvas, heatCanvas) {
+  constructor(mainCanvas) {
     this.canvas  = mainCanvas;
-    this.heatCv  = heatCanvas;
+    // Offscreen canvas for heatmap - rebuilt on every pan/zoom, composited into main canvas
+    this.heatCv  = document.createElement('canvas');
     this.ctx     = mainCanvas.getContext('2d');
-    this.heatCtx = heatCanvas.getContext('2d');
+    this.heatCtx = this.heatCv.getContext('2d');
     this.cam     = new Camera();
     this.mapImage = null;
     this.hoverEvent = null;

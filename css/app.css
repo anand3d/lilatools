@@ -181,8 +181,14 @@ header {
 .right {
   grid-row: 3; grid-column: 3; display: flex; flex-direction: column;
   background: var(--s1); border-left: 1px solid var(--border);
-  overflow: hidden;
+  overflow: hidden; min-height: 0;
 }
+/* The last panel-section with scrollable class fills remaining space */
+.right .panel-section.scrollable {
+  flex: 1; overflow-y: auto; min-height: 0;
+}
+.right .panel-section.scrollable::-webkit-scrollbar { width: 3px; }
+.right .panel-section.scrollable::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
 
 /* ── Shared panel sections ────────────────────────────── */
 .panel-section {
@@ -829,3 +835,26 @@ input[type=range]::-webkit-slider-thumb {
 .player-list { overflow-y: auto; flex: 1; min-height: 0; }
 .player-list::-webkit-scrollbar { width: 2px; }
 .player-list::-webkit-scrollbar-thumb { background: var(--dim); }
+
+/* ══ MATCH FILTER PILLS ═════════════════════════════════════════════════════ */
+.match-filter-list {
+  display: flex; flex-direction: column; gap: 1px;
+  padding: 2px 12px 8px; max-height: 160px; overflow-y: auto;
+}
+.match-filter-list::-webkit-scrollbar { width: 2px; }
+.match-filter-list::-webkit-scrollbar-thumb { background: var(--dim); }
+.mfpill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 3px 6px; border-radius: 2px; cursor: pointer;
+  font-size: 8px; letter-spacing: .3px; transition: background .1s;
+  user-select: none;
+}
+.mfpill:hover { background: var(--s3); }
+.mfpill.off { opacity: .3; }
+.mfpill.off .mf-dot { background: var(--dim); }
+.mf-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--acc); flex-shrink: 0;
+}
+.mf-label { flex: 1; color: var(--text); font-family: 'DM Mono', monospace; }
+.mf-count { color: var(--muted); font-size: 7px; flex-shrink: 0; }
