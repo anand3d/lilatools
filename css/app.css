@@ -141,8 +141,10 @@ header {
 .left {
   grid-row: 3; grid-column: 1; display: flex; flex-direction: column;
   background: var(--s1); border-right: 1px solid var(--border);
-  overflow: hidden;
+  overflow-y: auto; min-height: 0;
 }
+.left::-webkit-scrollbar { width: 3px; }
+.left::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
 
 /* ── Viewport ─────────────────────────────────────────── */
 .viewport {
@@ -181,14 +183,10 @@ header {
 .right {
   grid-row: 3; grid-column: 3; display: flex; flex-direction: column;
   background: var(--s1); border-left: 1px solid var(--border);
-  overflow: hidden; min-height: 0;
+  overflow-y: auto; min-height: 0;
 }
-/* The last panel-section with scrollable class fills remaining space */
-.right .panel-section.scrollable {
-  flex: 1; overflow-y: auto; min-height: 0;
-}
-.right .panel-section.scrollable::-webkit-scrollbar { width: 3px; }
-.right .panel-section.scrollable::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
+.right::-webkit-scrollbar { width: 3px; }
+.right::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
 
 /* ── Shared panel sections ────────────────────────────── */
 .panel-section {
@@ -858,3 +856,11 @@ input[type=range]::-webkit-slider-thumb {
 }
 .mf-label { flex: 1; color: var(--text); font-family: 'DM Mono', monospace; }
 .mf-count { color: var(--muted); font-size: 7px; flex-shrink: 0; }
+
+/* ── Inner scrollable lists ────────────────────────────── */
+.ev-bars::-webkit-scrollbar,
+#hotzones::-webkit-scrollbar,
+#player-list::-webkit-scrollbar  { width: 2px; }
+.ev-bars::-webkit-scrollbar-thumb,
+#hotzones::-webkit-scrollbar-thumb,
+#player-list::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
